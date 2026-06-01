@@ -317,13 +317,13 @@ hr{border:none;border-top:1px solid var(--bd);margin:2px 0}
   </div>
 
   <div class="sec">
-    <div class="sec-hdr">Dólar MEP</div>
+    <div class="sec-hdr">Adicional IT (Dólar MEP)</div>
     <div class="row-ctrl">
-      <div><div class="lbl-main">USD/mes</div></div>
+      <div><div class="lbl-main">USD/mes</div><div class="lbl-sub">Se suma al bruto antes de aportes</div></div>
       <input class="inp inp-r inp-sm" type="number" id="usdExtra" value="250" min="0" step="10" oninput="recompute()">
     </div>
     <div class="row-ctrl">
-      <div><div class="lbl-main">MEP hoy</div><div class="lbl-sub">15/05/2026</div></div>
+      <div><div class="lbl-main">Cotización MEP</div><div class="lbl-sub">Actualizar al cobrar</div></div>
       <div style="display:flex;align-items:center;gap:3px"><span style="color:var(--mu);font-size:11px">$</span>
         <input class="inp inp-r inp-sm" type="number" id="mepRate" value="1419" min="1" step="1" oninput="recompute()">
       </div>
@@ -652,8 +652,9 @@ function proj() {
   const out = [];
   for (let i = 0; i < 13; i++) {
     if (sg && IPC_MONTHS.includes(i)) b = Math.round(b * (1 + ipc));
-    const neto = Math.round(b * (1 - a));
-    const mepInc = Math.round(usd * mep);
+    const adIT   = Math.round(usd * mep);                  // Adicional IT: 250 USD × MEP, parte del bruto
+    const neto   = Math.round((b + adIT) * (1 - a));       // aportes sobre bruto total (base + IT)
+    const mepInc = adIT;                                    // guardado para referencia visual
     let sacNeto = 0;
     if (sac) {
       if (i === 1) { const sg2 = Math.round((bruto()/2)*(2/6)); sacNeto = Math.round(sg2*(1-a)); }
@@ -661,7 +662,7 @@ function proj() {
     }
     const ovr = monthOvr[i];
     const extra = ovr.ingresoExtra || 0;
-    const comp = neto + mepInc + sacNeto + extra;
+    const comp = neto + sacNeto + extra;                    // IT ya está dentro de neto
     const total = (ovr.ingresoReal !== null && ovr.ingresoReal > 0) ? ovr.ingresoReal + sacNeto + extra : comp;
     const ipcN = IPC_MONTHS.filter(m => m <= i).length;
     const mult = Math.pow(1 + ipc, ipcN);
@@ -682,12 +683,15 @@ function proj() {
 // ══ SIDEBAR RENDERS ══
 function renderAportes() {
   const b = bruto(), a = aportesR();
-  const jub = Math.round(b*.11), pami = Math.round(b*.03), os = Math.round(b*.03), tot = Math.round(b*a);
+  const adIT = Math.round(usdExtra() * mepRate());
+  const bt = b + adIT;                                      // bruto total = base + Adicional IT
+  const jub = Math.round(bt*.11), pami = Math.round(bt*.03), os = Math.round(bt*.03), tot = Math.round(bt*a);
   document.getElementById('aportesBox').innerHTML =
-    `<div class="aportes-row"><span style="color:var(--mu)">Jubilación (11%)</span><span style="color:var(--rd)">−${fmt(jub)}</span></div>
+    `<div class="aportes-row"><span style="color:var(--mu)">Bruto total (base + IT)</span><span style="color:var(--mu)">${fmt(bt)}</span></div>
+     <div class="aportes-row"><span style="color:var(--mu)">Jubilación (11%)</span><span style="color:var(--rd)">−${fmt(jub)}</span></div>
      <div class="aportes-row"><span style="color:var(--mu)">PAMI (3%)</span><span style="color:var(--rd)">−${fmt(pami)}</span></div>
      <div class="aportes-row"><span style="color:var(--mu)">Obra Social (3%)</span><span style="color:var(--rd)">−${fmt(os)}</span></div>
-     <div class="aportes-row total"><span>Sueldo neto</span><span style="color:var(--gr)">${fmt(b-tot)}</span></div>`;
+     <div class="aportes-row total"><span>Sueldo neto est.</span><span style="color:var(--gr)">${fmt(bt-tot)}</span></div>`;
 }
 function renderSac() {
   const b = bruto(), a = aportesR();
@@ -696,7 +700,7 @@ function renderSac() {
 }
 function renderMepCalc() {
   const u = usdExtra(), r = mepRate();
-  document.getElementById('mepCalc').innerHTML = `${u} USD × $${r.toLocaleString('es-AR')} = <strong style="color:var(--bl)">${fmt(Math.round(u*r))}/mes</strong>`;
+  document.getElementById('mepCalc').innerHTML = `${u} USD × $${r.toLocaleString('es-AR')} = <strong style="color:var(--bl)">${fmt(Math.round(u*r))}</strong> <span style="color:var(--mu)">(incl. en bruto)</span>`;
 }
 function renderExpEditor() {
   document.getElementById('expEditor').innerHTML = expenses.map(e =>
@@ -906,7 +910,7 @@ function renderDetail(p) {
       <div class="brows">
         <div class="brow" style="background:var(--s2)"><span class="nm">💰 Ingreso total</span><span class="am" style="color:var(--gr)">${fmt(x.total)}</span></div>
         <div class="brow" style="padding-left:16px"><span class="nm">Sueldo neto</span><span class="am" style="color:var(--mu)">${fmt(x.neto)}</span></div>
-        <div class="brow" style="padding-left:16px"><span class="nm">${usdExtra()} USD × MEP</span><span class="am" style="color:var(--bl)">${fmt(x.mepInc)}</span></div>
+        <div class="brow" style="padding-left:26px;background:rgba(96,165,250,.04)"><span class="nm" style="font-size:10px">↳ Adicional IT ${usdExtra()} USD × $${mepRate().toLocaleString('es-AR')}</span><span class="am" style="font-size:10px;color:var(--bl)">${fmt(x.mepInc)}</span></div>
         ${x.sacNeto > 0 ? `<div class="brow" style="padding-left:16px"><span class="nm">SAC/Aguinaldo</span><span class="am" style="color:var(--gr)">${fmt(x.sacNeto)}</span></div>` : ''}
         ${x.extra > 0 ? `<div class="brow" style="padding-left:16px"><span class="nm">Extra</span><span class="am" style="color:var(--te)">${fmt(x.extra)}</span></div>` : ''}
         <div class="brow" style="cursor:pointer" onclick="toggleDetExpand('ipc')">
@@ -952,7 +956,7 @@ function renderCharts(p) {
 }
 function renderTable(p) {
   document.getElementById('projTable').innerHTML = `<thead><tr>
-    <th>Mes</th><th class="right">Sueldo neto</th><th class="right">MEP</th>
+    <th>Mes</th><th class="right">Sueldo neto</th><th class="right">Adic. IT</th>
     <th class="right">SAC</th><th class="right">Extra</th>
     <th class="right">Ingreso</th><th class="right">Gastos</th><th class="right">Saldo</th>
   </tr></thead><tbody>${p.map((x,i)=>{
@@ -1361,8 +1365,7 @@ function renderResumenMes() {
       const sc = saldoFinal >= 0 ? 'var(--gr)' : 'var(--rd)';
       body = `<div style="margin-top:12px;display:flex;flex-direction:column;gap:1px">
         <div class="resumen-row"><span style="color:var(--mu)">💰 Ingreso total</span><span style="color:var(--gr);font-weight:700">${fmt(x.total)}</span></div>
-        <div class="resumen-row" style="padding-left:14px"><span style="color:var(--mu)">Sueldo neto</span><span>${fmt(x.neto)}</span></div>
-        <div class="resumen-row" style="padding-left:14px"><span style="color:var(--mu)">${usdExtra()} USD × MEP</span><span style="color:var(--bl)">${fmt(x.mepInc)}</span></div>
+        <div class="resumen-row" style="padding-left:14px"><span style="color:var(--mu)">Sueldo neto (incl. Adicional IT)</span><span>${fmt(x.neto)}</span></div>
         ${x.sacNeto > 0 ? `<div class="resumen-row" style="padding-left:14px"><span style="color:var(--mu)">SAC</span><span style="color:var(--gr)">${fmt(x.sacNeto)}</span></div>` : ''}
         ${x.extra > 0 ? `<div class="resumen-row" style="padding-left:14px"><span style="color:var(--mu)">Extra</span><span style="color:var(--te)">${fmt(x.extra)}</span></div>` : ''}
         <div class="resumen-row"><span style="color:var(--mu)">🌡 Fijos con IPC</span><span style="color:var(--rd)">−${fmt(x.tf)}</span></div>
