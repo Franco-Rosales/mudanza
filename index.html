@@ -12,9 +12,11 @@
 body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;min-height:100vh;display:flex;flex-direction:column}
 .topbar{background:var(--s1);border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar h1{font-size:16px;font-weight:700}.topbar .sub{color:var(--mu);font-size:11px;margin-top:2px}
-.tabs{display:flex;gap:4px}
-.tab-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer;font-size:12px;font-weight:600;transition:.15s}
-.tab-btn.active{background:var(--bl);border-color:var(--bl);color:#000}
+.navtabs{background:var(--s1);border-bottom:1px solid var(--bd);padding:0 16px;display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.navtabs::-webkit-scrollbar{display:none}
+.tab-btn{padding:11px 18px;border-radius:0;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--mu);cursor:pointer;font-size:12px;font-weight:600;transition:.15s;white-space:nowrap;flex-shrink:0}
+.tab-btn:hover:not(.active){color:var(--tx);background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--bl);border-bottom-color:var(--bl)}
 .body-wrap{flex:1;overflow-y:auto;padding:0}
 .sidebar{position:fixed;left:-285px;top:0;bottom:0;width:270px;background:var(--s1);border-right:1px solid var(--bd);padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;z-index:300;transition:left .25s cubic-bezier(.4,0,.2,1)}
 .sidebar.open{left:0}
@@ -162,6 +164,28 @@ hr{border:none;border-top:1px solid var(--bd);margin:2px 0}
 .cat-row{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:11px}
 .cat-bar-bg{flex:1;background:var(--s3);border-radius:3px;height:5px}
 .cat-bar{height:5px;border-radius:3px;transition:width .35s}
+/* ── PAGOS TAB ── */
+.pagos-disponible-card{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pagos-disponible-inp{background:var(--s3);border:1px solid var(--bd);border-radius:6px;color:var(--tx);padding:5px 10px;font-size:16px;font-weight:700;width:150px;text-align:right;outline:none;transition:.15s}
+.pagos-disponible-inp:focus{border-color:var(--bl)}
+.pagos-kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pagos-section-hdr{font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--mu);padding:6px 2px 2px}
+.pago-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);transition:.12s}
+.pago-item.paid{background:rgba(5,46,22,.2);border-color:rgba(74,222,128,.35)}
+.pago-item.skip{background:var(--s3);border-color:rgba(46,50,80,.4);opacity:.55}
+.pago-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.pago-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pago-item.paid .pago-name,.pago-item.skip .pago-name{text-decoration:line-through;color:var(--mu);font-weight:400}
+.pago-sub{font-size:10px;color:var(--mu);margin-top:1px}
+.pago-amt{font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;color:var(--rd)}
+.pago-item.paid .pago-amt{color:var(--mu);font-weight:400;text-decoration:line-through}
+.pago-item.skip .pago-amt{color:var(--mu);font-weight:400;text-decoration:line-through}
+.pago-actions{display:flex;gap:4px;flex-shrink:0}
+.pago-btn{padding:5px 10px;border-radius:5px;border:1px solid var(--bd);cursor:pointer;font-size:11px;font-weight:600;transition:.12s;white-space:nowrap;background:var(--s3);color:var(--mu)}
+.pago-btn-pay{border-color:rgba(74,222,128,.5);color:var(--gr);background:rgba(5,46,22,.2)}
+.pago-btn-pay:hover{background:rgba(5,46,22,.4)}
+.pago-btn-skip:hover{background:rgba(96,165,250,.1);border-color:var(--bl);color:var(--bl)}
+.pago-btn-undo:hover{border-color:var(--mu);color:var(--tx)}
 /* ── CUOTAS TAB ── */
 .cuota-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px;transition:.12s}
 .cuota-card:hover{border-color:rgba(96,165,250,.22)}
@@ -206,9 +230,13 @@ hr{border:none;border-top:1px solid var(--bd);margin:2px 0}
   body{font-size:12px}
   .topbar{flex-wrap:wrap;gap:6px;padding:8px 12px}
   .topbar h1{font-size:14px}
-  .topbar>div:last-child{width:100%;flex-wrap:wrap;gap:6px}
-  .tab-btn{font-size:11px;padding:5px 10px}
+  .topbar>div:last-child{flex-wrap:wrap;gap:6px}
+  .tab-btn{font-size:11px;padding:9px 14px}
+  .navtabs{padding:0 10px}
   .sidebar{width:min(300px,88vw);left:min(-300px,-88vw);transition:left .25s cubic-bezier(.4,0,.2,1)}
+  .pagos-kpi-strip{grid-template-columns:repeat(3,1fr)}
+  .pago-item{flex-wrap:wrap}
+  .pago-actions{width:100%;justify-content:flex-end}
   .main{overflow:visible;padding:10px}
   .kpi-strip{grid-template-columns:repeat(2,1fr)}
   .g-kpi-strip{grid-template-columns:repeat(2,1fr)}
@@ -248,18 +276,17 @@ hr{border:none;border-top:1px solid var(--bd);margin:2px 0}
     <div class="sub">Jun 2026 – Jun 2027 · Herramienta financiera personal</div>
   </div>
   <div style="display:flex;align-items:center;gap:8px">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="setTab('dashboard',this)">📊 Proyección</button>
-      <button class="tab-btn" onclick="setTab('gastos',this)">💸 Mis gastos</button>
-      <button class="tab-btn" onclick="setTab('cuotas',this)">💳 Cuotas</button>
-    </div>
-    <button onclick="toggleSidebar()" style="background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:5px;cursor:pointer;padding:4px 9px;font-size:13px" title="Configuración">⚙️</button>
-    <div style="width:1px;height:22px;background:var(--bd);margin:0 2px"></div>
-    <!-- Supabase sync status -->
     <div id="syncChip" style="font-size:10px;padding:4px 9px;border-radius:5px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);white-space:nowrap">☁️ cargando…</div>
     <div id="saveIndicator" style="font-size:10px;color:var(--gr);opacity:0;transition:opacity .5s;white-space:nowrap"></div>
     <button onclick="clearState()" style="background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:5px;cursor:pointer;padding:4px 9px;font-size:10px;font-weight:600" title="Borrar todos los datos y reiniciar">🗑</button>
+    <button onclick="toggleSidebar()" style="background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:5px;cursor:pointer;padding:4px 9px;font-size:13px" title="Configuración">⚙️</button>
   </div>
+</div>
+<div class="navtabs">
+  <button class="tab-btn active" onclick="setTab('dashboard',this)">📊 Proyección</button>
+  <button class="tab-btn" onclick="setTab('gastos',this)">💸 Mis gastos</button>
+  <button class="tab-btn" onclick="setTab('cuotas',this)">💳 Cuotas</button>
+  <button class="tab-btn" onclick="setTab('pagos',this)">📋 Pagos</button>
 </div>
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -511,6 +538,15 @@ hr{border:none;border-top:1px solid var(--bd);margin:2px 0}
     <div id="vencimientosCuotasCard"></div>
   </div>
 
+  <!-- PAGOS TAB -->
+  <div class="tab-content" id="tab-pagos">
+    <div class="card" style="padding:10px 14px">
+      <div style="font-size:11px;font-weight:600;color:var(--mu);margin-bottom:7px">SELECCIONÁ EL MES</div>
+      <div class="month-pills" id="pagosPills"></div>
+    </div>
+    <div id="pagosContent" style="display:flex;flex-direction:column;gap:14px"></div>
+  </div>
+
 </div><!-- /main -->
 </div><!-- /body-wrap -->
 <script>
@@ -562,6 +598,8 @@ let cuotas = [
 ];
 let cuotaNextId = 10;
 let cuotaFilter = null;
+let pagosMth = "Jun 2026";
+let pagosTracker = {};
 let monthOvr = Array(13).fill(null).map(() => ({ingresoReal:null,ingresoExtra:0,ahorroManual:0,ahorroCur:'ars'}));
 
 // ══ GASTOS STATE ══
@@ -604,6 +642,7 @@ function setTab(name, btn) {
   btn.classList.add('active');
   if (name === 'gastos') renderGastosMonth();
   if (name === 'cuotas') { renderCuotaEditor(); renderVencimientosCuotas(); }
+  if (name === 'pagos')  renderPagosTab();
 }
 
 // ══ PROJECTION CALC ══
@@ -1439,7 +1478,7 @@ const SB_READY = _sb !== null;
 function buildStateObject() {
   return {
     v: 4, expenses, cuotas, monthOvr, gastosData, selloRate,
-    gNextId, expNextId, cuotaNextId, selMth, gMth,
+    gNextId, expNextId, cuotaNextId, selMth, gMth, pagosMth, pagosTracker,
     inputs: {
       sueldoBruto:  parseFloat(document.getElementById('sueldoBruto').value)  || 4400000,
       aportesRate:  parseFloat(document.getElementById('aportesRate').value)  || 17,
@@ -1463,6 +1502,8 @@ function applyStateObject(d) {
   if (d.cuotaNextId)           cuotaNextId = d.cuotaNextId;
   if (d.selMth !== undefined)  selMth      = d.selMth;
   if (d.gMth)                  gMth        = d.gMth;
+  if (d.pagosMth)              pagosMth    = d.pagosMth;
+  if (d.pagosTracker)          pagosTracker = d.pagosTracker;
   if (d.selloRate !== undefined) { selloRate = d.selloRate; const el = document.getElementById('selloRateInput'); if(el) el.value = selloRate; }
   if (d.inputs) {
     const i = d.inputs;
@@ -1578,12 +1619,159 @@ async function loadState() {
   }
 }
 
+// ══ PAGOS DEL MES ══
+function getPagosD(month) {
+  if (!pagosTracker[month]) pagosTracker[month] = { disponible: 0, states: {} };
+  return pagosTracker[month];
+}
+function initPagosPills() {
+  const el = document.getElementById('pagosPills');
+  if (!el) return;
+  el.innerHTML = MONTHS_FULL.map(m =>
+    `<div class="pill ${m===pagosMth?'active':''}" onclick="selectPagosMth('${m}')">${m}</div>`
+  ).join('');
+}
+function selectPagosMth(m) {
+  pagosMth = m;
+  initPagosPills();
+  renderPagosTab();
+}
+function setPagoState(month, key, state) {
+  getPagosD(month).states[key] = state;
+  renderPagosTab();
+  saveState();
+}
+function renderPagosTab() {
+  initPagosPills();
+  const content = document.getElementById('pagosContent');
+  if (!content) return;
+  const p = proj();
+  const idx = MONTHS_FULL.indexOf(pagosMth);
+  if (idx === -1) { content.innerHTML = ''; return; }
+  const x = p[idx];
+  const d = getPagosD(pagosMth);
+
+  // Build unified items list: gastos fijos + cuotas activas este mes
+  const items = [];
+  for (const e of expenses) {
+    items.push({ key: 'exp_'+e.id, name: e.name, amount: x.eb[e.id]||0,
+      icon: e.ipc ? '🌡' : '🔒', sub: e.ipc ? 'Gasto fijo · IPC' : 'Gasto fijo' });
+  }
+  // Agrupar cuotas activas este mes por tarjeta
+  const cuotasByCard = {};
+  for (const c of cuotas) {
+    if ((x.cb[c.id]||0) > 0) {
+      const k = c.card || 'otro';
+      (cuotasByCard[k] = cuotasByCard[k] || []).push(c);
+    }
+  }
+  for (const [cardKey, cs] of Object.entries(cuotasByCard)) {
+    const totalNeto = cs.reduce((s, c) => s + c.amount, 0);
+    const sel = selloRate > 0 ? Math.round(totalNeto * selloRate / 100) : 0;
+    items.push({
+      key: 'card_' + cardKey,
+      name: CARDS[cardKey] || '⬜ Otro',
+      amount: totalNeto + sel,
+      icon: '💳',
+      sub: `${cs.length} cuota${cs.length !== 1 ? 's' : ''}${sel > 0 ? ` · +${fmt(sel)} sello` : ''}`
+    });
+  }
+
+  // Totals
+  let totPend = 0, totPaid = 0, totSkip = 0;
+  for (const it of items) {
+    const st = d.states[it.key] || 'pending';
+    if      (st === 'paid')  totPaid += it.amount;
+    else if (st === 'skip')  totSkip += it.amount;
+    else                     totPend += it.amount;
+  }
+  const disp   = d.disponible || 0;
+  const saldo  = disp - totPaid - totPend;
+  const sldClr = saldo >= 0 ? 'var(--gr)' : 'var(--rd)';
+  const sldSub = disp > 0 ? (saldo >= 0 ? '✅ alcanza' : '⚠️ faltan ' + fmtK(-saldo)) : 'Ingresá el disponible';
+
+  // Sort: pending → paid → skip
+  const order = { pending: 0, paid: 1, skip: 2 };
+  const sorted = [...items].sort((a,b) =>
+    order[d.states[a.key]||'pending'] - order[d.states[b.key]||'pending']);
+  const pendList = sorted.filter(it => (d.states[it.key]||'pending') === 'pending');
+  const paidList = sorted.filter(it => d.states[it.key] === 'paid');
+  const skipList = sorted.filter(it => d.states[it.key] === 'skip');
+
+  const renderItem = it => {
+    const st = d.states[it.key] || 'pending';
+    const actions = st === 'pending'
+      ? `<button class="pago-btn pago-btn-pay"  onclick="setPagoState('${pagosMth}','${it.key}','paid')">✓ Pagué</button>
+         <button class="pago-btn pago-btn-skip" onclick="setPagoState('${pagosMth}','${it.key}','skip')">↷ Saltar</button>`
+      : `<button class="pago-btn pago-btn-undo" onclick="setPagoState('${pagosMth}','${it.key}','pending')">↩ Mover a pendiente</button>`;
+    const amtClr = st === 'pending' ? 'var(--rd)' : 'var(--mu)';
+    return `<div class="pago-item ${st}">
+      <span class="pago-icon">${it.icon}</span>
+      <div style="flex:1;min-width:0">
+        <div class="pago-name">${it.name}</div>
+        <div class="pago-sub">${it.sub}</div>
+      </div>
+      <span class="pago-amt" style="color:${amtClr}">${fmt(it.amount)}</span>
+      <div class="pago-actions">${actions}</div>
+    </div>`;
+  };
+
+  const section = (hdrHtml, list) => list.length
+    ? `<div class="pagos-section-hdr">${hdrHtml} (${list.length})</div>${list.map(renderItem).join('')}`
+    : '';
+
+  content.innerHTML = `
+    <div class="pagos-disponible-card">
+      <div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px">💵 Plata disponible</div>
+        <div style="font-size:10px;color:var(--mu)">Lo que tenés para fijos y cuotas este mes</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px">
+        <span style="color:var(--mu)">$</span>
+        <input class="pagos-disponible-inp" type="number" min="0" step="1000"
+          value="${disp||''}" placeholder="0"
+          oninput="getPagosD('${pagosMth}').disponible=+this.value||0"
+          onblur="renderPagosTab()">
+      </div>
+    </div>
+
+    <div class="pagos-kpi-strip">
+      <div class="g-kpi">
+        <div class="kpi-lbl">Por pagar</div>
+        <div class="kpi-val" style="color:var(--rd)">${fmtK(totPend)}</div>
+        <div class="kpi-sub">${pendList.length} items</div>
+      </div>
+      <div class="g-kpi">
+        <div class="kpi-lbl">Pagado</div>
+        <div class="kpi-val" style="color:var(--gr)">${fmtK(totPaid)}</div>
+        <div class="kpi-sub">${paidList.length} items</div>
+      </div>
+      <div class="g-kpi">
+        <div class="kpi-lbl">Saldo restante</div>
+        <div class="kpi-val" style="color:${sldClr}">${disp > 0 ? fmtK(saldo) : '—'}</div>
+        <div class="kpi-sub">${sldSub}</div>
+      </div>
+    </div>
+
+    <div class="card" style="display:flex;flex-direction:column;gap:7px">
+      ${items.length === 0
+        ? '<div style="color:var(--mu);text-align:center;padding:24px;font-size:12px">Sin gastos fijos ni cuotas para este mes.</div>'
+        : section('PENDIENTES', pendList)
+          + section('<span style="color:var(--gr)">✓ PAGADOS</span>', paidList)
+          + section('<span style="color:var(--mu)">⊘ SALTADOS — no cuentan</span>', skipList)
+      }
+    </div>
+    ${skipList.length > 0 ? `<div style="font-size:10px;color:var(--mu);text-align:center">Los saltados quedan fuera del "por pagar" y del saldo restante</div>` : ''}
+  `;
+}
+
 // ══ INIT ══
 loadState().then(() => {
   renderExpEditor();
   renderCuotaEditor();
   initEmojiUI();
   initGastosPills();
+  initPagosPills();
   restoreGastosBudgetInputs();
   selectMethod('tc');
   recompute();
